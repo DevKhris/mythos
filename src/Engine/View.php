@@ -13,21 +13,24 @@ class View implements ViewInterface
      *
      * @var string
      */
-    protected $path;
+    protected $path = "../../resources/views";
 
     protected $params = [];
 
     protected $options = [];
 
+    /**
+     * Engine constructor
+     *
+     * @param array] $params parameters for view engine
+     */
     public function __construct($params)
     {
-        $this->path = $params['path'];
-        $this->options = [
-            'cache_dir' => $params->cache
-        ];
-
-        // Create template engine instance
-        // $this->engine = '';
+        $this->params = $params;
+        $this->options = $this->getParams();
+        if (isset($this->options['path'])) {
+            $this->path = $this->options['path'];
+        } 
 
         return $this;
     }
@@ -42,9 +45,9 @@ class View implements ViewInterface
     {
         $content = $this->display();
         if (!empty($params)) {
-            $view = $this->include($view, $params);
+            $view = $this->render($view, $params);
         } else {
-            $view = $this->include($view);
+            $view = $this->render($view);
         }
         echo str_replace('{{ display }}', $view, $content);
     }
@@ -54,16 +57,11 @@ class View implements ViewInterface
      *
      * @return void
      */
-    public function display($path = "layouts\\app")
+    public function display($path = "layouts.app")
     {
         ob_start();
-        include_once $this->path . str_replace('/', DIRECTORY_SEPARATOR,"$path.php");
+        include_once $this->getPath("$this->path.$path") . ".mythos";
         return ob_get_clean();
-    }
-
-    public function include($view, $params = [])
-    {
-        $this->render($view,$params);
     }
 
     /**
@@ -76,7 +74,7 @@ class View implements ViewInterface
      */
     public function render($view, $params = [])
     {
-        $view = str_replace(['/','\\','.'], DIRECTORY_SEPARATOR, $view);
+        $view = $this->getPath($view);
 
         ob_start();
         if (!empty($params)) {
@@ -85,7 +83,22 @@ class View implements ViewInterface
                 $params[$key] = $value;
             }
         }
-        include $this->path . DIRECTORY_SEPARATOR . "$view.php";
+        include $this->getPath("$this->path.$view") . ".mythos";
         return ob_get_clean();
+    }
+
+    public function getParams()
+    {
+       $params = [];
+       foreach($this->params as $key => $value)
+       {
+          $params[$key] = $value;
+       }
+       return $params;
+    }
+
+    public function getPath($path)
+    {
+        return str_replace(['/','\\','.'], DIRECTORY_SEPARATOR,$path);
     }
 }

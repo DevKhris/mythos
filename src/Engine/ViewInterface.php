@@ -10,8 +10,9 @@ interface ViewInterface
 
     public function render($view, $params);
 
-    public function include($view,$params);
-
     public function display($path);
 
+    public function getParams();
+
+    public function getPath($path);
 }
