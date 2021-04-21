@@ -21,7 +21,7 @@ class View implements ViewInterface
 
     public function __construct($params)
     {
-        $this->path = $params->path;
+        $this->path = $params['path'];
         $this->options = [
             'cache_dir' => $params->cache
         ];
