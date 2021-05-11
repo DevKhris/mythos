@@ -15,8 +15,18 @@ class View implements ViewInterface
      */
     protected $path = "../../resources/views";
 
+    /**
+     * Parameters property
+     *
+     * @var array
+     */
     protected $params = [];
 
+    /**
+     * Options property
+     *
+     * @var array
+     */
     protected $options = [];
 
     /**
@@ -30,10 +40,11 @@ class View implements ViewInterface
         $this->options = $this->getParams();
         if (isset($this->options['path'])) {
             $this->path = $this->options['path'];
-        } 
+        }
 
         return $this;
     }
+
     /**
      * Render view function
      *
@@ -55,6 +66,8 @@ class View implements ViewInterface
     /**
      * Display function for yielding display tag on layout
      *
+     * @param string $path layout path
+     * 
      * @return void
      */
     public function display($path = "layouts.app")
@@ -87,18 +100,58 @@ class View implements ViewInterface
         return ob_get_clean();
     }
 
-    public function getParams()
+    /**
+     * Asset helper function
+     *
+     * @param string $asset route to path for asset
+     * @return void
+     */
+    public function asset($asset)
     {
-       $params = [];
-       foreach($this->params as $key => $value)
-       {
-          $params[$key] = $value;
-       }
-       return $params;
+        // parse url from server name
+        $url = parse_url($_SERVER['SERVER_NAME']);
+        // escape directory for asset
+        $asset = str_replace('\\', '/', $asset);
+        // parse url with path and assset
+        $path = parse_url("https://" . $url['path'] . "/$asset");
+        // return path as string from key path
+        return ($path['path']);
     }
 
+    /**
+     * Call function within view
+     *
+     * @param string $callback
+     * @param array $params
+     * @return void
+     */
+    protected function call($callback, $params = [])
+    {
+        call_user_func($callback, $params);
+    }
+
+    /**
+     * Get parameters function
+     *
+     * @return void
+     */
+    public function getParams()
+    {
+        $params = [];
+        foreach ($this->params as $key => $value) {
+            $params[$key] = $value;
+        }
+        return $params;
+    }
+
+    /**
+     * Get path from string
+     *
+     * @param string $path
+     * @return void
+     */
     public function getPath($path)
     {
-        return str_replace(['/','\\','.'], DIRECTORY_SEPARATOR,$path);
+        return str_replace(['/', '\\', '.'], DIRECTORY_SEPARATOR, $path);
     }
 }
