@@ -15,9 +15,20 @@ class View implements ViewInterface
      */
     protected $path = "../../resources/views";
 
+    /**
+     * 
+     */
     protected $params = [];
 
-    protected $options = [];
+    /**
+     * Options array
+     *
+     * @var array
+     */
+    protected $options = [
+        'path' => $this->path,
+        'cache' => ''
+    ];
 
     /**
      * Engine constructor
@@ -30,7 +41,7 @@ class View implements ViewInterface
         $this->options = $this->getParams();
         if (isset($this->options['path'])) {
             $this->path = $this->options['path'];
-        } 
+        }
 
         return $this;
     }
@@ -83,22 +94,45 @@ class View implements ViewInterface
                 $params[$key] = $value;
             }
         }
-        include $this->getPath("$this->path.$view") . ".mythos";
+        include $this->getPath("$this->params['path'].$view") . ".mythos";
         return ob_get_clean();
     }
 
-    public function getParams()
+    public function getParams(): array|string
     {
-       $params = [];
-       foreach($this->params as $key => $value)
-       {
-          $params[$key] = $value;
-       }
-       return $params;
+        $params = [];
+        foreach ($this->params as $key => $value) {
+            $params[$key] = $value;
+        }
+        return $params;
     }
 
-    public function getPath($path)
+    /**
+     * Settter for specific param and value
+     *
+     * @param string $param
+     * @param string|array|object $value
+     * @return void
+     */
+    public function setParam(string $param, string|array|object $value): void
     {
-        return str_replace(['/','\\','.'], DIRECTORY_SEPARATOR,$path);
+        $this->params[$param] = $value;
+    }
+
+    /**
+     * Get path from string
+     *
+     * @param string] $path
+     * @return string
+     */
+    public function getPath(string $path): string
+    {
+        $result = str_replace(['/', '\\', '.'], DIRECTORY_SEPARATOR, $path);
+        return $result;
+    }
+
+    public function setPath(string $value): void
+    {
+        $this->setParam('path', $value);
     }
 }

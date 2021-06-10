@@ -6,13 +6,17 @@ namespace Mythos\Engine;
 
 interface ViewInterface
 {
-    public function view($view,$params);
+    public function view(string $view, array $params);
 
-    public function render($view, $params);
+    public function render(string $view, array $params);
 
-    public function display($path);
+    public function display(string $path);
 
     public function getParams();
 
-    public function getPath($path);
+    public function setParam(string $param, string|array|object $value);
+
+    public function getPath(string $path);
+
+    public function setPath(string $path);
 }
