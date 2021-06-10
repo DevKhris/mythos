@@ -35,7 +35,7 @@ class View implements ViewInterface
      *
      * @param array] $params parameters for view engine
      */
-    public function __construct($params)
+    public function __construct($params): object
     {
         $this->params = $params;
         $this->options = $this->getParams();
@@ -45,14 +45,16 @@ class View implements ViewInterface
 
         return $this;
     }
+
     /**
      * Render view function
      *
      * @param string $view view to render
-     *
+     * @param string|array $params parameters for view
+     * 
      * @return string
      */
-    public function view($view, $params = [])
+    public function view(string $view, array $params = [])
     {
         $content = $this->display();
         if (!empty($params)) {
@@ -68,7 +70,7 @@ class View implements ViewInterface
      *
      * @return void
      */
-    public function display($path = "layouts.app")
+    public function display(string $path = "layouts.app")
     {
         ob_start();
         include_once $this->getPath("$this->path.$path") . ".mythos";
@@ -89,12 +91,14 @@ class View implements ViewInterface
 
         ob_start();
         if (!empty($params)) {
-            extract($params);
             foreach ($params as $key => $value) {
                 $params[$key] = $value;
             }
+            extract($params);
         }
-        include $this->getPath("$this->params['path'].$view") . ".mythos";
+
+        include_once $this->getPath("$this->params['path'].$view.mythos");
+
         return ob_get_clean();
     }
 
@@ -108,21 +112,22 @@ class View implements ViewInterface
     }
 
     /**
-     * Settter for specific param and value
+     * Settter for specific key and value
      *
-     * @param string $param
-     * @param string|array|object $value
+     * @param string $key key to asign value
+     * @param string|array|object $value value to asign to key
      * @return void
      */
-    public function setParam(string $param, string|array|object $value): void
+    public function setParam(string $key, string|array|object $value): void
     {
-        $this->params[$param] = $value;
+        $this->params[$key] = $value;
     }
 
     /**
      * Get path from string
      *
-     * @param string] $path
+     * @param string $path path to views
+     * 
      * @return string
      */
     public function getPath(string $path): string
