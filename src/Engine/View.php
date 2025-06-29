@@ -1,7 +1,9 @@
 <?php
 namespace Mythos\Engine;
 
+use Exception;
 use Mythos\Engine\ViewInterface;
+use Mythos\Exceptions\TemplateNotFoundException;
 
 class View implements ViewInterface
 {
@@ -67,9 +69,11 @@ class View implements ViewInterface
     }
 
     /**
-     * Display function for yielding display tag on layout
-     *
-     * @return void
+     * Display function for yielding display tag on layout.
+     * 
+     * @param string $path  layout path
+     * 
+     * @return bool|string
      */
     public function display(string $path = "layouts.app"): bool|string
     {
@@ -79,16 +83,25 @@ class View implements ViewInterface
     }
 
     /**
-     * Render function
+     * Render template with data.
      *
-     * @param string $view   view
+     * @param string $viewPath  view path
      * @param array  $params parameters for view
      *
-     * @return object
+     * @return bool|string
      */
-    public function render($view, $params = []): bool|string
+    public function render(string $viewPath, array $params = []): bool|string
     {
-        $view = $this->getPath($view);
+        $viewPath = $this->getPath($viewPath);
+
+        $templatePath = $this->params['path'];
+        $templateExt = $this->extension;
+
+        $view = "$templatePath.$viewPath$templateExt";
+
+        if(! file_exists($view)) {
+            throw new TemplateNotFoundException();
+        }
 
         ob_start();
         if (!empty($params)) {
@@ -98,9 +111,7 @@ class View implements ViewInterface
             extract($params);
         }
 
-        $path = $this->params['path'];
-
-        include_once $this->getPath("$path.$view$extension");
+        include_once $this->getPath($view);
 
         return ob_get_clean();
     }
@@ -158,5 +169,13 @@ class View implements ViewInterface
     public function setExtension(string $extension): void
     {
         $this->extension = $extension;
+    }
+
+    /**
+     * Safetly escape values from render
+     */
+    public function escape(?string $value): string
+    {
+        return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }
