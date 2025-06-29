@@ -28,7 +28,7 @@ class View implements ViewInterface
      * @var array
      */
     protected $options = [
-        'path' => $this->path,
+        'path' => '',
         'cache' => ''
     ];
 
