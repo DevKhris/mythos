@@ -92,12 +92,11 @@ class View implements ViewInterface
      */
     public function render(string $viewPath, array $params = []): bool|string
     {
-        $viewPath = $this->getPath($viewPath);
-
-        $templatePath = $this->params['path'];
         $templateExt = $this->extension;
+        $templatePath = $this->params['path'];
+        $viewPath = $this->getPath("$templatePath.$viewPath");
 
-        $view = "$templatePath.$viewPath$templateExt";
+        $view = "$viewPath$templateExt";
 
         // if(! file_exists($view)) {
         //     throw new TemplateNotFoundException();
@@ -111,7 +110,7 @@ class View implements ViewInterface
             extract($params);
         }
 
-        include_once $this->getPath($view);
+        include_once $view;
 
         return ob_get_clean();
     }
