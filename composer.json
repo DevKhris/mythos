@@ -20,5 +20,13 @@
         "psr-4": {
             "Mythos\\": "./src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mythos\\Tests\\": "./tests"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.2"
     }
 }

@@ -2,6 +2,7 @@
 namespace Mythos\Engine;
 
 use Exception;
+use Mythos\Engine\Template;
 use Mythos\Engine\ViewInterface;
 use Mythos\Exceptions\TemplateNotFoundException;
 
@@ -102,19 +103,13 @@ class View implements ViewInterface
             throw new TemplateNotFoundException();
         }
 
-        ob_start();
-        if (!empty($params)) {
-            foreach ($params as $key => $value) {
-                $params[$key] = $value;
-            }
-            extract($params);
-        }
-
-        include_once $view;
-
-        return ob_get_clean();
+        return (new Template($view, $params))->render();
     }
 
+    /**
+     * Gey value from key in params.
+     * @return array
+     */
     public function getParams(): array|string
     {
         $params = [];
@@ -168,13 +163,5 @@ class View implements ViewInterface
     public function setExtension(string $extension): void
     {
         $this->extension = $extension;
-    }
-
-    /**
-     * Safetly escape values from render
-     */
-    public function escape(?string $value): string
-    {
-        return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }
