@@ -5,13 +5,16 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Chris Hernandez",
-            "email": "devkhris@hotmail.com"
+            "name": "Christian Hernandez",
+            "email": "devkhris@gmail.com"
         }
     ],
     "autoload": {
         "psr-4": {
             "Mythos\\": "./src"
         }
+    },
+    "require": {
+        "php": ">=8"
     }
 }
