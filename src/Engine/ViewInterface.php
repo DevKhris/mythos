@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Mythos\Engine;
 
 interface ViewInterface
@@ -19,4 +17,8 @@ interface ViewInterface
     public function getPath(string $path);
 
     public function setPath(string $path);
+
+     public function getExtension();
+
+    public function setExtension(string $extension);
 }

@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 namespace Mythos\Engine;
 
 use Mythos\Engine\ViewInterface;
@@ -9,16 +6,19 @@ use Mythos\Engine\ViewInterface;
 class View implements ViewInterface
 {
     /**
-     * Path property
-     *
-     * @var string
+     * Path property.
      */
-    protected $path = "../../resources/views";
+    protected string $path = "../../resources/views";
+
+    /**
+     * Extension property.
+     */
+    protected string $extension = ".mythos";
 
     /**
      * 
      */
-    protected $params = [];
+    protected array $params = [];
 
     /**
      * Options array
@@ -35,15 +35,15 @@ class View implements ViewInterface
      *
      * @param array] $params parameters for view engine
      */
-    public function __construct($params): object
+    public function __construct(array $params, string $extension = '.mythos')
     {
         $this->params = $params;
+        $this->extension = $extension;
+
         $this->options = $this->getParams();
         if (isset($this->options['path'])) {
             $this->path = $this->options['path'];
         }
-
-        return $this;
     }
 
     /**
@@ -54,15 +54,16 @@ class View implements ViewInterface
      * 
      * @return string
      */
-    public function view(string $view, array $params = [])
+    public function view(string $view, array $params = []): void
     {
         $content = $this->display();
+        $changes = 0;
         if (!empty($params)) {
             $view = $this->render($view, $params);
         } else {
             $view = $this->render($view);
         }
-        echo str_replace('{{ display }}', $view, $content);
+        echo str_replace('{{ display }}', $view, $content, $changes);
     }
 
     /**
@@ -70,10 +71,10 @@ class View implements ViewInterface
      *
      * @return void
      */
-    public function display(string $path = "layouts.app")
+    public function display(string $path = "layouts.app"): bool|string
     {
         ob_start();
-        include_once $this->getPath("$this->path.$path") . ".mythos";
+        include_once $this->getPath("$this->path.$path") . $this->extension;
         return ob_get_clean();
     }
 
@@ -85,7 +86,7 @@ class View implements ViewInterface
      *
      * @return object
      */
-    public function render($view, $params = [])
+    public function render($view, $params = []): bool|string
     {
         $view = $this->getPath($view);
 
@@ -97,7 +98,9 @@ class View implements ViewInterface
             extract($params);
         }
 
-        include_once $this->getPath("$this->params['path'].$view.mythos");
+        $path = $this->params['path'];
+
+        include_once $this->getPath("$path.$view$extension");
 
         return ob_get_clean();
     }
@@ -139,5 +142,21 @@ class View implements ViewInterface
     public function setPath(string $value): void
     {
         $this->setParam('path', $value);
+    }
+
+    /**
+     * Get extension property.
+     */ 
+    public function getExtension(): string
+    {
+        return $this->extension;
+    }
+
+    /**
+     * Set extension property.
+     */ 
+    public function setExtension(string $extension): void
+    {
+        $this->extension = $extension;
     }
 }
