@@ -1,20 +1,24 @@
 {
     "name": "devkhris/mythos",
-    "description": "Templating Engine maded with PHP",
     "type": "library",
+    "description": "Templating Engine maded with PHP",
+    "keywords": [
+        "templating"
+    ],
     "license": "MIT",
     "authors": [
         {
             "name": "Christian Hernandez",
-            "email": "devkhris@gmail.com"
+            "email": "devkhris@gmail.com",
+            "role": "Developer"
         }
     ],
+    "require": {
+        "php": ">=8"
+    },
     "autoload": {
         "psr-4": {
             "Mythos\\": "./src"
         }
-    },
-    "require": {
-        "php": ">=8"
     }
 }
