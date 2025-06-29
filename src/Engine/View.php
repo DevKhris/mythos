@@ -99,9 +99,9 @@ class View implements ViewInterface
 
         $view = "$templatePath.$viewPath$templateExt";
 
-        if(! file_exists($view)) {
-            throw new TemplateNotFoundException();
-        }
+        // if(! file_exists($view)) {
+        //     throw new TemplateNotFoundException();
+        // }
 
         ob_start();
         if (!empty($params)) {
