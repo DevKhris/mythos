@@ -29,9 +29,24 @@ class Template
             extract($this->params, EXTR_REFS);
         }
 
-        include_once $this->path;
+        $view = $this->replacePlaceholder($this->path);
+        eval('?>' . $view);
 
         return ob_get_clean();
+    }
+    
+
+    /**
+     * Replace placeholder prefix from templating for functional code.
+     * 
+     * @return array|string
+     */
+    public function replacePlaceholder(string $view): array|string
+    {
+        $viewFile = file_get_contents($view,  false);
+        $viewFile = str_replace(['{{', '}}'], ['<?=', '?>'], $viewFile);
+        $viewFile = str_replace(['{#', '#}'], ['<?php', '?>'], $viewFile);
+        return $viewFile;
     }
     
     /**
