@@ -41,7 +41,8 @@ class Template
      */
     public function renderPartial(string $path, array $params = []): string
     {
-        $path = str_replace('.', DIRECTORY_SEPARATOR, $path) . '.php'; 
+        $basePath = str_replace('/', DIRECTORY_SEPARATOR, '/../views/');
+        $path = __DIR__ . $basePath . str_replace('.', DIRECTORY_SEPARATOR, $path) . '.php'; 
         $partial = new self($path, $params);
 
         return $partial->render();
