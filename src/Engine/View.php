@@ -103,7 +103,7 @@ class View implements ViewInterface
             throw new TemplateNotFoundException();
         }
 
-        return (new Template($view, $params))->render();
+        return (new Template($view, $params, $this->path))->render();
     }
 
     /**

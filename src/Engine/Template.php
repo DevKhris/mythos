@@ -10,11 +10,11 @@ class Template
     protected string $path;
     public array $params = [];
 
-    public function __construct($path, $params)
+    public function __construct($path, $params, $basePath)
     {
         $this->path = $path;
         $this->params = $params;
-        $this->basePath = getcwd();
+        $this->basePath = $basePath ?? getcwd();
     }
 
     /**
@@ -44,9 +44,8 @@ class Template
      */
     public function renderPartial(string $path, array $params = []): string
     {
-        $basePath = str_replace('/', DIRECTORY_SEPARATOR, '/../views/');
-        $path = $this->path . $basePath . str_replace('.', DIRECTORY_SEPARATOR, $path) . '.php'; 
-        $partial = new self($path, $params);
+        $path = $this->basePath . DIRECTORY_SEPARATOR . str_replace('.', DIRECTORY_SEPARATOR, $path) . '.mythos'; 
+        $partial = new self($path, $params, $this->basePath);
 
         return $partial->render();
     }
