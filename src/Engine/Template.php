@@ -33,7 +33,6 @@ class Template
         }
 
         $view = $this->replacePlaceholder($this->path);
-        $view = preg_replace('/^\s*<\?php|\?>\s*$/', '', $view);
         eval('?>' . $view);
 
         return ob_get_clean();
