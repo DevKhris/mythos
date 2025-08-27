@@ -5,6 +5,8 @@ namespace Mythos\Engine;
 
 class Template
 {
+    protected string $basePath;
+
     protected string $path;
     public array $params = [];
 
@@ -12,6 +14,7 @@ class Template
     {
         $this->path = $path;
         $this->params = $params;
+        $this->basePath = getcwd();
     }
 
     /**
@@ -42,7 +45,7 @@ class Template
     public function renderPartial(string $path, array $params = []): string
     {
         $basePath = str_replace('/', DIRECTORY_SEPARATOR, '/../views/');
-        $path = __DIR__ . $basePath . str_replace('.', DIRECTORY_SEPARATOR, $path) . '.php'; 
+        $path = $this->path . $basePath . str_replace('.', DIRECTORY_SEPARATOR, $path) . '.php'; 
         $partial = new self($path, $params);
 
         return $partial->render();
