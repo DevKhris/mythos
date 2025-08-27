@@ -22,19 +22,29 @@ class Template
     public function render(): bool|string
     {
         ob_start();
-        if (!empty($this->params)) {
-            foreach ($this->params as $key => $value) {
+        if (! empty($this->params)) {
+            foreach ($this->params as $key => &$value) {
                 $this->params[$key] = $value;
             }
             extract($this->params, EXTR_REFS);
         }
 
         $view = $this->replacePlaceholder($this->path);
+        $view = preg_replace('/^\s*<\?php|\?>\s*$/', '', $view);
         eval('?>' . $view);
 
         return ob_get_clean();
     }
     
+    /**
+     * Get new instance of template for rendering sub-views.
+     */
+    public function renderPartial(string $path, array $params = []): string
+    {
+        $partial = new self($path, $params);
+
+        return $partial->render();
+    }
 
     /**
      * Replace placeholder prefix from templating for functional code.
